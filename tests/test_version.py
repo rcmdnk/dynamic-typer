@@ -4,7 +4,7 @@ import pytest
 from git import Repo
 from git.exc import InvalidGitRepositoryError
 
-from python_template import __version__
+from dynamic_typer import __version__
 
 
 def test_version():
