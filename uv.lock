@@ -373,6 +373,7 @@ source = { editable = "." }
 dependencies = [
     { name = "conf-finder" },
     { name = "inherit-docstring" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typer" },
 ]
 
@@ -384,13 +385,14 @@ dev = [
     { name = "pytest-benchmark" },
     { name = "pytest-cov" },
     { name = "pytest-xdist" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "types-pyyaml" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "conf-finder", specifier = ">=0.2.2" },
     { name = "inherit-docstring", specifier = ">=0.1.4" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
     { name = "typer", specifier = ">=0.15.1" },
 ]
 
@@ -402,7 +404,7 @@ dev = [
     { name = "pytest-benchmark", specifier = ">=4.0.0" },
     { name = "pytest-cov", specifier = ">=5.0.0" },
     { name = "pytest-xdist", specifier = ">=3.3.1" },
-    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
+    { name = "types-pyyaml", specifier = ">=6.0.12.20241221" },
 ]
 
 [[package]]
@@ -1712,6 +1714,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cb/ce/dca7b219718afd37a0068f4f2530a727c2b74a8b6e8e0c0080a4c0de4fcd/typer-0.15.1.tar.gz", hash = "sha256:a0588c0a7fa68a1978a069818657778f86abe6ff5ea6abf472f940a08bfe4f0a", size = 99789 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d0/cc/0a838ba5ca64dc832aa43f727bd586309846b0ffb2ce52422543e6075e8a/typer-0.15.1-py3-none-any.whl", hash = "sha256:7994fb7b8155b64d3402518560648446072864beefd44aa2dc36972a5972e847", size = 44908 },
+]
+
+[[package]]
+name = "types-pyyaml"
+version = "6.0.12.20241221"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/60/ba3f23024bdd406e65c359b9dbd9757f058986bd57d94f6639015f9a9fae/types_pyyaml-6.0.12.20241221.tar.gz", hash = "sha256:4f149aa893ff6a46889a30af4c794b23833014c469cc57cbc3ad77498a58996f", size = 17034 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4b/04/1cc4fffeb4ace85c205e84cd48eb12cb37ec6ffb68245b7eef8f2086d490/types_PyYAML-6.0.12.20241221-py3-none-any.whl", hash = "sha256:0657a4ff8411a030a2116a196e8e008ea679696b5b1a8e1a6aa8ebb737b34688", size = 20023 },
 ]
 
 [[package]]

@@ -1,57 +1,70 @@
 from __future__ import annotations
 
 import sys
-import typer
-from typing_extensions import Annotated
-from typing import Any
-from types import FunctionType
-from .typing import TyperOpts
-from pathlib import Path
 from copy import deepcopy
+from pathlib import Path
+from types import FunctionType
+from typing import TYPE_CHECKING, Annotated, Any
+
+import typer
+
+if TYPE_CHECKING:
+    from .typing import TyperOpts
 
 
-def sys_args(opts: dict[str, dict[str, Any]]) -> list[str]:
-    arg_names = [
-        x.lstrip("-").replace("-", "_")
-        for x in sys.argv[1:]
-        if x.startswith("--")
-    ]
-    return [x for x in arg_names if x in opts]
+def sys_args(arg_names: list[str]) -> list[str]:
+    args = sys.argv
+    names = []
+    i = 0
+    while i < len(args):
+        if args[i] == '--':
+            break
+        if args[i].startswith('--'):
+            name = args[i].lstrip('-').replace('-', '_')
+            if name in arg_names:
+                if name not in names:
+                    names.append(name)
+                i += 1
+        i += 1
+    return names
 
 
 def parse_args(
-    input_args: dict[str, Any], opts: dict[str, dict[str, Any]]
+    input_args: dict[str, Any], arg_names: list[str]
 ) -> dict[str, Any]:
-    sa = sys_args(opts)
-    output_args = {x: input_args[x] for x in input_args if x in sa}
-    return output_args
+    sa = sys_args(arg_names)
+    return {x: input_args[x] for x in input_args if x in sa}
 
 
 def read_conf(file_name: str | Path, ext: str) -> dict[Any, Any]:
-    if ext == "toml":
+    if ext == 'toml':
         if sys.version_info >= (3, 11):
             import tomllib
         else:
             import tomli as tomllib
-        with Path(file_name).open("rb") as f:
+        with Path(file_name).open('rb') as f:
             return tomllib.load(f)
-    elif ext in ["yaml", "yml"]:
+    elif ext in ['yaml', 'yml']:
         import yaml
 
         with Path(file_name).open() as f:
             return yaml.safe_load(f)
-    elif ext == "json":
+    elif ext == 'json':
         import json
 
         with Path(file_name).open() as f:
             return json.load(f)
     else:
-        msg = f"Unsupported file extension: {ext}"
+        msg = f'Unsupported file extension: {ext}'
         raise ValueError(msg)
 
 
 def get_conf(
-    conf_name: str, command: str, conf_file: str = "", conf_ext: str = "toml", conf_type: str = "both",
+    conf_name: str,
+    command: str,
+    conf_file: str = '',
+    conf_ext: str = 'toml',
+    conf_type: str = 'both',
 ) -> dict[str, Any]:
     if not conf_file:
         from conf_finder import ConfFinder
@@ -63,52 +76,87 @@ def get_conf(
     conf_dict = {}
     if conf_path.is_file():
         conf_dict = read_conf(conf_path, conf_ext)
-        conf = conf_dict.get("global", {})
+        conf = conf_dict.get('global', {})
         conf.update(conf_dict.get(command, {}))
     return conf
 
 
-def make_annotated(name: str, opts: TyperOpts) -> Annotated[Any, Any]:
+def make_annotated(name: str, opt: dict[str, Any]) -> Annotated[Any, Any]:  # noqa: ANN401
     return Annotated[
-        opts["type"],
+        opt['type'],
         typer.Option(
-            "--" + name.replace("_", "-"),
-            help=opts["help"],
+            '--' + name.replace('_', '-'),
+            help=opt['help'],
         ),
     ]
 
 
-def make_cmd_func(app_name: str, command: str, opts: TyperOpts, callback: FunctionType, add_conf_file: bool = False, conf_ext: str = "toml", conf_type: str = "both") -> FunctionType:
+def make_cmd_func(
+    app_name: str,
+    command: str,
+    opts: TyperOpts,
+    callback: FunctionType,
+    use_conf: bool = False,
+    conf_ext: str = 'toml',
+    conf_type: str = 'both',
+) -> FunctionType:
     opts = deepcopy(opts)
-    if add_conf_file:
-        opts["conf_file"] = {
-            "type": str,
-            "help": "Path to the configuration file",
-            "default": "",
+    if use_conf:
+        opts['conf_file'] = {
+            'type': str,
+            'help': 'Path to the configuration file',
+            'default': '',
         }
-    opts_str = ", ".join(opts)
-    func_code = f"def {command}({opts_str}):"
-    if add_conf_file:
+    opts_str = ', '.join(opts)
+    func_code = f'def {command}({opts_str}):'
+    if use_conf:
         func_code += f"""
-    conf = get_conf(conf_name="{app_name}", command="{command}", conf_file=conf_file, conf_ext="{conf_ext}", conf_type="{conf_type}")
-    conf.update(parse_args(locals(), {opts}))
-    callback(**conf)
-"""
-    func_code = f"""
-def {name}({opts_str}):
-"""
+    conf = get_conf(
+        conf_name="{app_name}",
+        command="{command}",
+        conf_file=conf_file,
+        conf_ext="{conf_ext}",
+        conf_type="{conf_type}"
+    )
+    """
+    else:
+        func_code += """
+    conf = {}
+    """
 
-    code_obj = compile(func_code, "<string>", "exec")
-    local_vars: dict[str, Any] = {"callback": callback}
-    exec(code_obj, {}, local_vars)
-    func = FunctionType(local_vars[command].__code__, globals())
-    func.__defaults__ = tuple([x["default"] for x in opts.values()])
+    func_code += f"""
+    conf.update(parse_args(locals(), {list(opts.keys())}))
+    callback(**conf)
+    """
+
+    # code_obj = compile(func_code, '<string>', 'exec')
+    local_vars: dict[str, Any] = {
+        'get_conf': get_conf,
+        'parse_args': parse_args,
+        'callback': callback,
+    }
+    exec(func_code, local_vars)  # noqa: S102
+    # func = FunctionType(local_vars[command].__code__, globals())
+    func = local_vars[command]
+    func.__defaults__ = tuple([x['default'] for x in opts.values()])
     func.__annotations__ = {
         key: make_annotated(key, value) for key, value in opts.items()
     }
     return func
 
 
-def add_command(app: typer.Typer, app_name: str, command: str, opts: TyperOpts, callback: FunctionType, help: str, add_conf_file: bool = False, conf_ext: str = "toml", conf_type: str = "both") -> None:
-    func = make_cmd_func(app_name, command, opts, callback, add_conf_file, conf_ext, conf_type)
+def add_command(
+    app: typer.Typer,
+    app_name: str,
+    command: str,
+    opts: TyperOpts,
+    callback: FunctionType,
+    help: str,  # noqa: A002
+    use_conf: bool = False,
+    conf_ext: str = 'toml',
+    conf_type: str = 'both',
+) -> None:
+    func = make_cmd_func(
+        app_name, command, opts, callback, use_conf, conf_ext, conf_type
+    )
     app.command(command, help=help)(func)
