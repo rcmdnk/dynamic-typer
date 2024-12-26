@@ -15,7 +15,7 @@ from dynamic_typer.function_utils import (
 )
 
 
-def test_sys_args(monkeypatch):
+def test_sys_args(monkeypatch: pytest.MonkeyPatch) -> None:
     arg_names = ['test', 'example', 'another_arg', 'not_given']
     with monkeypatch.context() as m:
         m.setattr(
@@ -37,7 +37,7 @@ def test_sys_args(monkeypatch):
         assert result == ['test', 'example', 'another_arg']
 
 
-def test_parse_args(monkeypatch):
+def test_parse_args(monkeypatch: pytest.MonkeyPatch) -> None:
     input_args = {'test': 1, 'example': 1, 'another_arg': 1, 'not_given': 1}
     opts = {
         'test': None,
@@ -65,7 +65,7 @@ def test_parse_args(monkeypatch):
     assert result == {'test': 1, 'example': 1, 'another_arg': 1}
 
 
-def test_read_conf_toml(tmp_path: Path):
+def test_read_conf_toml(tmp_path: Path) -> None:
     conf_path = tmp_path / 'config.toml'
     conf_content = """
     [global]
@@ -82,9 +82,9 @@ def test_read_conf_toml(tmp_path: Path):
     }
 
 
-def test_make_cmd_func():
-    def dummy_callback(test):
-        return test
+def test_make_cmd_func() -> None:
+    def dummy_callback(test: str = '') -> None:
+        pass
 
     opts = {
         'test_str': {
@@ -104,7 +104,7 @@ def test_make_cmd_func():
 
     assert isinstance(func, FunctionType)
     assert func.__name__ == 'test_command'
-    assert func.__annotations__['test_str'].__origin__ == str
+    assert func.__annotations__['test_str'].__origin__ is str
     assert (
         func.__annotations__['test_str'].__metadata__[0].default
         == '--test-str'
@@ -113,7 +113,7 @@ def test_make_cmd_func():
         func.__annotations__['test_str'].__metadata__[0].help
         == 'Str test argument'
     )
-    assert func.__annotations__['test_int'].__origin__ == int
+    assert func.__annotations__['test_int'].__origin__ is int
     assert (
         func.__annotations__['test_int'].__metadata__[0].default
         == '--test-int'
@@ -124,10 +124,10 @@ def test_make_cmd_func():
     )
 
 
-def test_add_command(monkeypatch):
+def test_add_command(monkeypatch: pytest.MonkeyPatch) -> None:
     app = typer.Typer()
 
-    def dummy_callback(test: str = 'Hello'):
+    def dummy_callback(test: str = 'Hello') -> None:
         typer.echo(f'Test: {test}')
 
     opts = {
@@ -150,7 +150,7 @@ def test_add_command(monkeypatch):
     runner = CliRunner()
     with monkeypatch.context() as m:
         args = []
-        m.setattr('sys.argv', ['app'] + args)
+        m.setattr('sys.argv', ['app', *args])
         result = runner.invoke(app, args)
 
     assert result.exit_code == 0
@@ -158,17 +158,17 @@ def test_add_command(monkeypatch):
 
     with monkeypatch.context() as m:
         args = ['--test', 'Hello World']
-        m.setattr('sys.argv', ['app'] + args)
+        m.setattr('sys.argv', ['app', *args])
         result = runner.invoke(app, args)
 
     assert result.exit_code == 0
     assert result.stdout == 'Test: Hello World\n'
 
 
-def test_add_multi_command(monkeypatch):
+def test_add_multi_command(monkeypatch: pytest.MonkeyPatch) -> None:
     app = typer.Typer()
 
-    def dummy_callback(test: str = 'Hello'):
+    def dummy_callback(test: str = 'Hello') -> None:
         typer.echo(f'Test: {test}')
 
     opts = {
@@ -200,7 +200,7 @@ def test_add_multi_command(monkeypatch):
     runner = CliRunner()
     with monkeypatch.context() as m:
         args = ['test_command']
-        m.setattr('sys.argv', ['app'] + args)
+        m.setattr('sys.argv', ['app', *args])
         result = runner.invoke(app, args)
 
     assert result.exit_code == 0
@@ -208,14 +208,14 @@ def test_add_multi_command(monkeypatch):
 
     with monkeypatch.context() as m:
         args = ['test_command', '--test', 'Hello World']
-        m.setattr('sys.argv', ['app'] + args)
+        m.setattr('sys.argv', ['app', *args])
         result = runner.invoke(app, args)
 
     assert result.exit_code == 0
     assert result.stdout == 'Test: Hello World\n'
 
 
-def test_typer_decorator():
+def test_typer_decorator() -> None:
     opts = {
         'test': {
             'type': str,
@@ -227,7 +227,7 @@ def test_typer_decorator():
 
     @typer_decorator(opts)
     class TestClass:
-        """A test class"""
+        """A test class."""
 
     instance = TestClass()
     assert instance.test == 'default_value'
@@ -235,15 +235,14 @@ def test_typer_decorator():
 
     @typer_decorator(opts)
     class TestClass:
-        """A test class"""
+        """A test class."""
 
     instance = TestClass(test='Hello')
     assert instance.test == 'Hello'
 
     @typer_decorator({})
     class TestClass:
-        """A test class"""
+        """A test class."""
 
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError, match='Unknown parameter: test'):
         instance = TestClass(test='Hello')
-    assert str(e.value) == 'Unknown parameter: test'

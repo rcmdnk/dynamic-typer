@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 from inherit_docstring.utils import merge_docstring
 
 if TYPE_CHECKING:
-    from types import FunctionType
+    from typing import Callable
 
     from .typing import TyperOpts
 
@@ -23,7 +23,7 @@ def make_doc(opts: TyperOpts) -> str:
     return doc
 
 
-def typer_decorator(opts: TyperOpts) -> FunctionType:
+def typer_decorator(opts: TyperOpts) -> Callable[[type], type]:
     def _decorator(cls: type) -> type:
         doc_opts = f"""
         Parameters
@@ -37,7 +37,8 @@ def typer_decorator(opts: TyperOpts) -> FunctionType:
         def init(self: Any, **kw: Any) -> None:  # noqa: ANN401
             for k in kw:
                 if k not in opts:
-                    raise ValueError(f'Unknown parameter: {k}')
+                    msg = f'Unknown parameter: {k}'
+                    raise ValueError(msg)
             for k, v in opts.items():
                 setattr(self, k, kw.get(k, v['default']))
 

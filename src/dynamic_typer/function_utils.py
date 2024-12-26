@@ -3,12 +3,13 @@ from __future__ import annotations
 import sys
 from copy import deepcopy
 from pathlib import Path
-from types import FunctionType
 from typing import TYPE_CHECKING, Annotated, Any
 
 import typer
 
 if TYPE_CHECKING:
+    from types import FunctionType
+
     from .typing import TyperOpts
 
 
@@ -129,14 +130,12 @@ def make_cmd_func(
     callback(**conf)
     """
 
-    # code_obj = compile(func_code, '<string>', 'exec')
     local_vars: dict[str, Any] = {
         'get_conf': get_conf,
         'parse_args': parse_args,
         'callback': callback,
     }
     exec(func_code, local_vars)  # noqa: S102
-    # func = FunctionType(local_vars[command].__code__, globals())
     func = local_vars[command]
     func.__defaults__ = tuple([x['default'] for x in opts.values()])
     func.__annotations__ = {
