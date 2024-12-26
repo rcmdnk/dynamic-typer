@@ -1,3 +1,4 @@
 from typing import Any
 
-TyperOpts = dict[str, dict[str, Any]]
+TyperArgs = dict[str, dict[str, Any]]
+TyperCommands = dict[str, dict[str, Any]]

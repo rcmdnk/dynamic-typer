@@ -6,7 +6,7 @@ import typer
 from typer.testing import CliRunner
 
 from dynamic_typer.class_utils import typer_decorator
-from dynamic_typer.function_utils import (
+from dynamic_typer.utils import (
     add_command,
     make_cmd_func,
     parse_args,
@@ -39,7 +39,7 @@ def test_sys_args(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_parse_args(monkeypatch: pytest.MonkeyPatch) -> None:
     input_args = {'test': 1, 'example': 1, 'another_arg': 1, 'not_given': 1}
-    opts = {
+    args = {
         'test': None,
         'example': None,
         'another_arg': None,
@@ -61,7 +61,7 @@ def test_parse_args(monkeypatch: pytest.MonkeyPatch) -> None:
                 '--not-given',
             ],
         )
-        result = parse_args(input_args, opts)
+        result = parse_args(input_args, list(args))
     assert result == {'test': 1, 'example': 1, 'another_arg': 1}
 
 
@@ -86,7 +86,7 @@ def test_make_cmd_func() -> None:
     def dummy_callback(test: str = '') -> None:
         pass
 
-    opts = {
+    args = {
         'test_str': {
             'type': str,
             'help': 'Str test argument',
@@ -97,9 +97,9 @@ def test_make_cmd_func() -> None:
 
     func = make_cmd_func(
         app_name='test_app',
-        command='test_command',
-        opts=opts,
-        callback=dummy_callback,
+        cmd_name='test_command',
+        cmd_obj=dummy_callback,
+        args=args,
     )
 
     assert isinstance(func, FunctionType)
@@ -130,7 +130,7 @@ def test_add_command(monkeypatch: pytest.MonkeyPatch) -> None:
     def dummy_callback(test: str = 'Hello') -> None:
         typer.echo(f'Test: {test}')
 
-    opts = {
+    args = {
         'test': {
             'type': str,
             'help': 'Test argument',
@@ -141,9 +141,9 @@ def test_add_command(monkeypatch: pytest.MonkeyPatch) -> None:
     add_command(
         app,
         app_name='test_app',
-        command='test_command',
-        opts=opts,
-        callback=dummy_callback,
+        cmd_name='test_command',
+        cmd_obj=dummy_callback,
+        args=args,
         help='A test command',
     )
 
@@ -171,7 +171,7 @@ def test_add_multi_command(monkeypatch: pytest.MonkeyPatch) -> None:
     def dummy_callback(test: str = 'Hello') -> None:
         typer.echo(f'Test: {test}')
 
-    opts = {
+    args = {
         'test': {
             'type': str,
             'help': 'Test argument',
@@ -182,18 +182,18 @@ def test_add_multi_command(monkeypatch: pytest.MonkeyPatch) -> None:
     add_command(
         app,
         app_name='test_app',
-        command='test_command',
-        opts=opts,
-        callback=dummy_callback,
+        cmd_name='test_command',
+        cmd_obj=dummy_callback,
+        args=args,
         help='A test command',
     )
 
     add_command(
         app,
         app_name='test_app',
-        command='test_command2',
-        opts=opts,
-        callback=dummy_callback,
+        cmd_name='test_command2',
+        cmd_obj=dummy_callback,
+        args=args,
         help='A test command 2',
     )
 
@@ -216,7 +216,7 @@ def test_add_multi_command(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_typer_decorator() -> None:
-    opts = {
+    args = {
         'test': {
             'type': str,
             'help': 'Test argument',
@@ -225,7 +225,7 @@ def test_typer_decorator() -> None:
         }
     }
 
-    @typer_decorator(opts)
+    @typer_decorator(args)
     class TestClass:
         """A test class."""
 
@@ -233,7 +233,7 @@ def test_typer_decorator() -> None:
     assert instance.test == 'default_value'
     assert 'Test argument' in TestClass.__doc__
 
-    @typer_decorator(opts)
+    @typer_decorator(args)
     class TestClass:
         """A test class."""
 
