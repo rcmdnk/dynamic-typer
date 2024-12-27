@@ -42,13 +42,12 @@ def test_typer_decorator() -> None:
     class TestClass:
         """A test class."""
 
+        def run(self) -> None:
+            pass
+
     instance = TestClass()
     assert instance.test == 'default_value'
     assert 'Test argument' in TestClass.__doc__
-
-    @typer_decorator(args)
-    class TestClass:
-        """A test class."""
 
     instance = TestClass(test='Hello')
     assert instance.test == 'Hello'
@@ -56,6 +55,9 @@ def test_typer_decorator() -> None:
     @typer_decorator({})
     class TestClass:
         """A test class."""
+
+        def run(self) -> None:
+            pass
 
     with pytest.raises(ValueError, match='Unknown parameter: test'):
         instance = TestClass(test='Hello')

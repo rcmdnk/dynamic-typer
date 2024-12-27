@@ -2,7 +2,7 @@ import pytest
 import typer
 from typer.testing import CliRunner
 
-from dynamic_typer.class_utils import CmdClass, typer_decorator
+from dynamic_typer.class_utils import typer_decorator
 from dynamic_typer.utils import add_command, add_commands, make_cmd_func
 
 
@@ -118,7 +118,7 @@ def test_add_commands_integration(monkeypatch: pytest.MonkeyPatch) -> None:
     }
 
     @typer_decorator(args)
-    class TestCmd(CmdClass):
+    class TestCmd:
         def run(self) -> None:
             typer.echo(f'Test argument: {self.test_arg}')
 
