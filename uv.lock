@@ -251,16 +251,16 @@ wheels = [
 
 [[package]]
 name = "conf-finder"
-version = "0.2.2"
+version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gitpython" },
     { name = "pyaml" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/54/92825c1544761a0a69f2413f56dfc99f87fa0dedd1adb82db947ef45cb4b/conf_finder-0.2.2.tar.gz", hash = "sha256:3c25f1655549868ecbc205aeada10b409440e6cab6b01f2480fd0d5629df4aa7", size = 74693 }
+sdist = { url = "https://files.pythonhosted.org/packages/25/7e/233812e2ab32874a11da2113bce4981df6d6d43da94221204aa6afc986b2/conf_finder-0.3.1.tar.gz", hash = "sha256:3df3a3eaf2a1af8920c3b91b6b2068a4620c5b4e6fac8711e6da4582e0ed591f", size = 74811 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/92/3c/f5b0574b6e0181a31859ff5072d8637a60180a4c7d9710c12973ea6c6e63/conf_finder-0.2.2-py3-none-any.whl", hash = "sha256:dc8845cf073f4b7dd88c69b0553c4889d0a8430785dac4d3a5f75fb2159bb0e7", size = 8972 },
+    { url = "https://files.pythonhosted.org/packages/96/53/c5d92b192f8e6d0ab7e08c629db999750a2d07c2771ba76195e365017b7e/conf_finder-0.3.1-py3-none-any.whl", hash = "sha256:f4e7d4a87839f54433bd3d7ed3be09fc1e1ca8f251f7df3d2ff87dbfbcd1bd69", size = 9391 },
 ]
 
 [[package]]
@@ -372,6 +372,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "conf-finder" },
+    { name = "inflection" },
     { name = "inherit-docstring" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typer" },
@@ -390,7 +391,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "conf-finder", specifier = ">=0.2.2" },
+    { name = "conf-finder", specifier = ">=0.3.1" },
+    { name = "inflection", specifier = ">=0.5.1" },
     { name = "inherit-docstring", specifier = ">=0.1.4" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
     { name = "typer", specifier = ">=0.15.1" },
@@ -677,6 +679,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cd/12/33e59336dca5be0c398a7482335911a33aa0e20776128f038019f1a95f1b/importlib_metadata-8.5.0.tar.gz", hash = "sha256:71522656f0abace1d072b9e5481a48f07c138e00f079c38c8f883823f9c26bd7", size = 55304 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/d9/a1e041c5e7caa9a05c925f4bdbdfb7f006d1f74996af53467bc394c97be7/importlib_metadata-8.5.0-py3-none-any.whl", hash = "sha256:45e54197d28b7a7f1559e60b95e7c567032b602131fbd588f1497f47880aa68b", size = 26514 },
+]
+
+[[package]]
+name = "inflection"
+version = "0.5.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/7e/691d061b7329bc8d54edbf0ec22fbfb2afe61facb681f9aaa9bff7a27d04/inflection-0.5.1.tar.gz", hash = "sha256:1a29730d366e996aaacffb2f1f1cb9593dc38e2ddd30c91250c6dde09ea9b417", size = 15091 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/59/91/aa6bde563e0085a02a435aa99b49ef75b0a4b062635e606dab23ce18d720/inflection-0.5.1-py2.py3-none-any.whl", hash = "sha256:f38b2b640938a4f35ade69ac3d053042959b62a0f1076a5bbaa1b9526605a8a2", size = 9454 },
 ]
 
 [[package]]

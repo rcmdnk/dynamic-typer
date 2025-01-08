@@ -10,9 +10,10 @@ classifiers = ["Development Status :: 4 - Beta", "Intended Audience :: Developer
 requires-python = ">=3.9,<4"
 dependencies = [
     "tomli >= 2.0.1; python_version < '3.11'",
-    "conf-finder>=0.2.2",
+    "conf-finder>=0.3.1",
     "inherit-docstring>=0.1.4",
     "typer>=0.15.1",
+    "inflection>=0.5.1",
 ]
 
 [dependency-groups]
@@ -23,7 +24,7 @@ dev = [
     "pytest-benchmark >= 4.0.0",
     "pyproject-pre-commit[ruff] >= 0.3.0",
     "gitpython >= 3.1.41",
-     "types-pyyaml>=6.0.12.20241221",
+    "types-pyyaml>=6.0.12.20241221",
 ]
 
 [project.urls]
@@ -58,6 +59,7 @@ ignore = [
     "COM812", "D203", "ISC001", # The following rules may cause conflicts when used with the formatter: `COM812`, `D203`, `ISC001`. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding them to the `ignore` configuration.
     "B905", # [*] `zip()` without an explicit `strict=` parameter
     "PLR0913", # Too many arguments in function definition (>5)
+    "SLF001", # Private member accessed
 ]
 
 [tool.ruff.lint.per-file-ignores]
