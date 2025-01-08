@@ -33,13 +33,13 @@ class TyperArg:
 
 
 def get_conf(
-    conf_name: str,
+    app_name: str,
     conf_file: str = '',
     conf_ext: EXT = 'toml',
     conf_type: CONF_TYPE = 'both',
 ) -> dict[str, Any]:
     return ConfFinder(
-        name=conf_name, conf_name=conf_file, conf_type=conf_type
+        name=app_name, conf_name=conf_file, conf_type=conf_type
     ).read(conf_ext)
 
 
@@ -157,7 +157,7 @@ class DynamicTyper(typer.Typer):
         self.conf: dict[str, Any] = {}
         if use_conf or conf_file:
             self.conf = get_conf(
-                conf_name=cast(str, self.info.name),
+                app_name=cast(str, self.info.name),
                 conf_file=conf_file,
                 conf_ext=conf_ext,
                 conf_type=conf_type,
@@ -177,16 +177,18 @@ class DynamicTyper(typer.Typer):
         no_args_is_help: bool = False,
         hidden: bool = False,
         deprecated: bool = False,
-        # Rich settings
         rich_help_panel: str | None = typer.models.Default(None),
+        args: dict[str, TyperArg] | None = None,
     ) -> Callable[[CommandFunctionType], CommandFunctionType]:
+        args = self.args if args is None else {**self.args, **args}
+
         def wrapper(
             func: CommandFunctionType,
             name: str | None,
             command: CommandFunctionType,
         ) -> CommandFunctionType:
             name = name or func.__name__
-            func = make_cmd_func(func, name, self.args, self.conf)
+            func = make_cmd_func(func, name, args, self.conf)
 
             decorator = command(
                 name=name,
