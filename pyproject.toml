@@ -28,8 +28,8 @@ dev = [
 ]
 
 [project.urls]
-Repository = "ssh://git@github.com/rcmdnk/dynamic-typer"
-Homepage = "ssh://git@github.com/rcmdnk/dynamic-typer"
+Repository = "https://github.com/rcmdnk/dynamic-typer"
+Homepage = "https://github.com/rcmdnk/dynamic-typer"
 
 [build-system]
 requires = ["hatchling"]

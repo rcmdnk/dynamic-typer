@@ -67,20 +67,18 @@ def get_args_from_func(
             arg.default = conf[name]
         elif arg.default is not inspect.Parameter.empty:
             pass
-        elif param.default is not inspect.Parameter.empty:
-            arg.default = param.default
         else:
-            arg.default = None
+            arg.default = param.default
 
-        arg.type = arg.type or (
-            param.annotation
-            if param.annotation is not inspect.Parameter.empty
-            else type(arg.default)
-        )
+        if arg.type is None:
+            if param.annotation is not inspect.Parameter.empty:
+                arg.type = param.annotation
+            elif arg.default is not inspect.Parameter.empty:
+                arg.type = type(arg.default)
+            else:
+                arg.type = str
 
-        arg.info = arg.info or typer.Option(
-            f"--{name.replace('_', '-')}", help=f'Set {name}.'
-        )
+        arg.info = arg.info or typer.Argument(help=f'Set {name}.')
         func_args[name] = arg
 
     return func_args
