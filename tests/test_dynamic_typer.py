@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Annotated
 
 import pytest
+import typer
 from typer import Argument, Option
 from typer.testing import CliRunner
 
@@ -108,7 +109,7 @@ def test_dynamic_typer_single_command() -> None:
 
     @app.command()
     def hello(greet, name) -> None:
-        pass
+        typer.echo(f'{greet} {name}')
 
     runner = CliRunner()
 
@@ -141,7 +142,7 @@ def test_dynamic_typer_command() -> None:
 
     @app.command()
     def cmd1(greet, name, time) -> None:
-        pass
+        typer.echo(f'{greet} {name} ({time})')
 
     @app.command(
         args={
@@ -151,7 +152,7 @@ def test_dynamic_typer_command() -> None:
         }
     )
     def cmd2(greet, name, time) -> None:
-        pass
+        typer.echo(f'{greet} {name} ({time})')
 
     runner = CliRunner()
 
@@ -168,3 +169,80 @@ def test_dynamic_typer_command() -> None:
     )
     assert result.exit_code == 0
     assert result.stdout == 'Hi Alice (13:00)\n'
+
+
+def test_dynamic_typer_no_defualt() -> None:
+    app = DynamicTyper(name='app')
+
+    @app.command()
+    def cmd(x) -> None:
+        pass
+
+    runner = CliRunner()
+
+    result = runner.invoke(app)
+    assert result.exit_code == 2
+    assert "Missing argument 'X'." in result.stdout
+
+    result = runner.invoke(app, ['--help'])
+    assert result.exit_code == 0
+    assert 'x      TEXT  Set x. [default: None] [required]' in result.stdout
+
+
+def test_dynamic_typer_default() -> None:
+    app = DynamicTyper(name='app')
+
+    @app.command()
+    def cmd(x=3) -> None:
+        pass
+
+    runner = CliRunner()
+
+    result = runner.invoke(app, ['--help'])
+    assert result.exit_code == 0
+    assert 'x      [X]  Set x. [default: 3]' in result.stdout
+
+
+def test_dynamic_typer_type() -> None:
+    app = DynamicTyper(name='app')
+
+    @app.command()
+    def cmd(x: int) -> None:
+        pass
+
+    runner = CliRunner()
+
+    result = runner.invoke(app, ['--help'])
+    assert result.exit_code == 0
+    assert 'x      INTEGER  Set x. [default: None] [required]' in result.stdout
+
+
+def test_dynamic_typer_default_type() -> None:
+    app = DynamicTyper(name='app')
+
+    @app.command()
+    def cmd(x: int = 3) -> None:
+        pass
+
+    runner = CliRunner()
+
+    result = runner.invoke(app, ['--help'])
+    assert result.exit_code == 0
+    assert 'x      [X]  Set x. [default: 3]' in result.stdout
+
+
+def test_dynamic_typer_pre_defined() -> None:
+    app = DynamicTyper(name='app')
+
+    @app.command()
+    def cmd(x: Annotated[int, typer.Argument(help='help for x')]) -> None:
+        pass
+
+    runner = CliRunner()
+
+    result = runner.invoke(app, ['--help'])
+    assert result.exit_code == 0
+    assert (
+        'x      INTEGER  help for x [default: None] [required]'
+        in result.stdout
+    )

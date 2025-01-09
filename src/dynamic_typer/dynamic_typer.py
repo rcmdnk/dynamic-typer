@@ -10,6 +10,7 @@ from typing import Annotated, Any, Callable, cast
 import typer
 from conf_finder import CONF_TYPE, EXT, ConfFinder
 from typer.models import ArgumentInfo, CommandFunctionType, OptionInfo
+from typing_extensions import _AnnotatedAlias
 
 
 @dataclass
@@ -72,12 +73,19 @@ def get_args_from_func(
 
         if arg.type is None:
             if param.annotation is not inspect.Parameter.empty:
-                arg.type = param.annotation
+                if isinstance(param.annotation, _AnnotatedAlias):
+                    arg.type = param.annotation.__origin__
+                    if len(param.annotation.__metadata__) > 0 and isinstance(
+                        param.annotation.__metadata__[0],
+                        (typer.models.ArgumentInfo, typer.models.OptionInfo),
+                    ):
+                        arg.info = param.annotation.__metadata__[0]
+                else:
+                    arg.type = param.annotation
             elif arg.default is not inspect.Parameter.empty:
                 arg.type = type(arg.default)
             else:
                 arg.type = str
-
         arg.info = arg.info or typer.Argument(help=f'Set {name}.')
         func_args[name] = arg
 
