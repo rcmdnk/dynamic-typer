@@ -1,6 +1,6 @@
 [project]
 name = "dynamic-typer"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = [ { name = "rcmdnk", email = "rcmdnk@gmail.com" } ]
 readme = "README.md"
