@@ -7,5 +7,5 @@ condition: branch=main, os=ubuntu-latest, python_version=3.13
 
 | Tests | Skipped | Failures | Errors | Time |
 | ----- | ------- | -------- | -------- | ------------------ |
-| 13 | 0 :zzz: | 5 :x: | 0 :fire: | 2.009s :stopwatch: |
+| 13 | 0 :zzz: | 5 :x: | 0 :fire: | 1.957s :stopwatch: |
 
