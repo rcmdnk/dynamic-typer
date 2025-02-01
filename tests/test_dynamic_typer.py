@@ -111,7 +111,7 @@ def test_dynamic_typer_single_command() -> None:
     def hello(greet, name) -> None:
         typer.echo(f'{greet} {name}')
 
-    runner = CliRunner()
+    runner = CliRunner(env={'TERM': 'dumb'})
 
     result = runner.invoke(app)
     assert result.exit_code == 0
@@ -154,7 +154,8 @@ def test_dynamic_typer_command() -> None:
     def cmd2(greet, name, time) -> None:
         typer.echo(f'{greet} {name} ({time})')
 
-    runner = CliRunner()
+    # Disable color/style, needed for GitHub Actions
+    runner = CliRunner(env={'TERM': 'dumb'})
 
     result = runner.invoke(app, ['cmd1'])
     assert result.exit_code == 0
@@ -178,7 +179,7 @@ def test_dynamic_typer_no_defualt() -> None:
     def cmd(x) -> None:
         pass
 
-    runner = CliRunner()
+    runner = CliRunner(env={'TERM': 'dumb'})
 
     result = runner.invoke(app)
     assert result.exit_code == 2
@@ -196,7 +197,7 @@ def test_dynamic_typer_default() -> None:
     def cmd(x=3) -> None:
         pass
 
-    runner = CliRunner()
+    runner = CliRunner(env={'TERM': 'dumb'})
 
     result = runner.invoke(app, ['--help'])
     assert result.exit_code == 0
@@ -210,7 +211,7 @@ def test_dynamic_typer_type() -> None:
     def cmd(x: int) -> None:
         pass
 
-    runner = CliRunner()
+    runner = CliRunner(env={'TERM': 'dumb'})
 
     result = runner.invoke(app, ['--help'])
     assert result.exit_code == 0
@@ -224,7 +225,7 @@ def test_dynamic_typer_default_type() -> None:
     def cmd(x: int = 3) -> None:
         pass
 
-    runner = CliRunner()
+    runner = CliRunner(env={'TERM': 'dumb'})
 
     result = runner.invoke(app, ['--help'])
     assert result.exit_code == 0
@@ -238,7 +239,7 @@ def test_dynamic_typer_pre_defined() -> None:
     def cmd(x: Annotated[int, typer.Argument(help='help for x')]) -> None:
         pass
 
-    runner = CliRunner()
+    runner = CliRunner(env={'TERM': 'dumb'})
 
     result = runner.invoke(app, ['--help'])
     assert result.exit_code == 0
