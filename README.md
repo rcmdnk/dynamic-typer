@@ -1,11 +1,11 @@
-commit: [e9044bbff4db8639ff24b427ac09b551b1d7ac0a](https://github.com/rcmdnk/dynamic-typer/tree/e9044bbff4db8639ff24b427ac09b551b1d7ac0a)
+commit: [84e623876c50d7aaf10eab2effe0214090158f14](https://github.com/rcmdnk/dynamic-typer/tree/84e623876c50d7aaf10eab2effe0214090158f14)
 
 condition: branch=main, os=ubuntu-latest, python_version=3.13
 
-[![test](https://github.com/rcmdnk/dynamic-typer/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/dynamic-typer/actions/runs/21380879800)
-<a href="https://github.com/rcmdnk/dynamic-typer/blob/e9044bbff4db8639ff24b427ac09b551b1d7ac0a/README.md"><img alt="Coverage" src="https://img.shields.io/badge/Coverage-98%25-brightgreen.svg" /></a><details><summary>Coverage Report </summary><table><tr><th>File</th><th>Stmts</th><th>Miss</th><th>Cover</th><th>Missing</th></tr><tbody><tr><td colspan="5"><b>src/dynamic_typer</b></td></tr><tr><td>&nbsp; &nbsp;<a href="https://github.com/rcmdnk/dynamic-typer/blob/e9044bbff4db8639ff24b427ac09b551b1d7ac0a/src/dynamic_typer/dynamic_typer.py">dynamic_typer.py</a></td><td>78</td><td>2</td><td>97%</td><td><a href="https://github.com/rcmdnk/dynamic-typer/blob/e9044bbff4db8639ff24b427ac09b551b1d7ac0a/src/dynamic_typer/dynamic_typer.py#L63">63</a>, <a href="https://github.com/rcmdnk/dynamic-typer/blob/e9044bbff4db8639ff24b427ac09b551b1d7ac0a/src/dynamic_typer/dynamic_typer.py#L161">161</a></td></tr><tr><td><b>TOTAL</b></td><td><b>83</b></td><td><b>2</b></td><td><b>98%</b></td><td>&nbsp;</td></tr></tbody></table></details>
+[![test](https://github.com/rcmdnk/dynamic-typer/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/dynamic-typer/actions/runs/21846865822)
+<a href="https://github.com/rcmdnk/dynamic-typer/blob/84e623876c50d7aaf10eab2effe0214090158f14/README.md"><img alt="Coverage" src="https://img.shields.io/badge/Coverage-98%25-brightgreen.svg" /></a><details><summary>Coverage Report </summary><table><tr><th>File</th><th>Stmts</th><th>Miss</th><th>Cover</th><th>Missing</th></tr><tbody><tr><td colspan="5"><b>src/dynamic_typer</b></td></tr><tr><td>&nbsp; &nbsp;<a href="https://github.com/rcmdnk/dynamic-typer/blob/84e623876c50d7aaf10eab2effe0214090158f14/src/dynamic_typer/dynamic_typer.py">dynamic_typer.py</a></td><td>78</td><td>2</td><td>97%</td><td><a href="https://github.com/rcmdnk/dynamic-typer/blob/84e623876c50d7aaf10eab2effe0214090158f14/src/dynamic_typer/dynamic_typer.py#L63">63</a>, <a href="https://github.com/rcmdnk/dynamic-typer/blob/84e623876c50d7aaf10eab2effe0214090158f14/src/dynamic_typer/dynamic_typer.py#L161">161</a></td></tr><tr><td><b>TOTAL</b></td><td><b>83</b></td><td><b>2</b></td><td><b>98%</b></td><td>&nbsp;</td></tr></tbody></table></details>
 
 | Tests | Skipped | Failures | Errors | Time |
 | ----- | ------- | -------- | -------- | ------------------ |
-| 13 | 0 :zzz: | 0 :x: | 0 :fire: | 1.474s :stopwatch: |
+| 13 | 0 :zzz: | 0 :x: | 0 :fire: | 1.452s :stopwatch: |
 
